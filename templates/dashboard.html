@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notebook Manager Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        footer {
+           margin-top: 230px;
+            text-align: center;
+            padding: 15px;
+            background-color: #343a40;
+            color: #fff;
+        } 
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    
+    
+
+    </style>
+  
+</head>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+  <ul class=flashes>
+  {% for message in messages %}
+    <center><p>{{ message }}</p></center>
+  {% endfor %}
+  </ul>
+{% endif %}
+{% endwith %}
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Notebook Manager </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="notesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Notes
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="notesDropdown">
+                            <li><a class="dropdown-item" href="{{url_for('addnotes')}}">Add Notes</a></li>
+                            <li><a class="dropdown-item" href="{{url_for('viewallnotes')}}">view all Notes</a></li>
+                            <li><a class="dropdown-item" href="#">Generate Excel Sheet</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="filesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Files
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="filesDropdown">
+                            <li><a class="dropdown-item" href="{{url_for('uploadfile')}}">Add File</a></li>
+                            <li><a class="dropdown-item" href="{{url_for('viewallfiles')}}">View All Files</a></li>
+                            <li><a class="dropdown-item" href="{{url_for('getexceldata')}}">Get Excel Data</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <form action="{{url_for('search')}}" class="d-flex" method="post">
+                    <input class="form-control me-2" type="search" placeholder="Search" name="sname"aria-label="Search">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </form>
+                <a class="btn btn-danger ms-3" href="#">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <centre><h1 class="dashboard-title">Welcome to the Notebook Manager Dashboard<br>
+        {{session.get('user')}}</h1></centre>
+   <!--Main Content--> 
+     <!-- <div class="container">
+        <h1 class="dashboard-title">Welcome to the Notebook Manager Dashboard</h1>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">View All Notes</h5>
+                        <p class="card-text">Manage and view your saved notes.</p>
+                        <a href="#" class="btn btn-primary">Go</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Create Notes</h5>
+                        <p class="card-text">Add new notes to your collection.</p>
+                        <a href="#" class="btn btn-success">Go</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Upload Files</h5>
+                        <p class="card-text">Upload your files securely.</p>
+                        <a href="#" class="btn btn-warning">Go</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- Footer -->
+    <!--<footer>
+         &copy; 2024 Notebook Manager. All Rights Reserved. 
+     </footer> -->
+    
+   
+</body>
+{% if sdata %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Created At</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Example rows (to be replaced by backend data) -->
+         {% for i in sdata %}
+        <tr>
+            <td>{{i[0]}}</td>
+            <td>{{i[1]}}</td>
+            <td>{{i[3]}}</td>
+           
+            <td><a href="{{url_for('viewnotes',nid=i[0])}}">View</a></td>
+            <td><a href="{{url_for('updatenotes',nid=i[0])}}">Update</a></td>
+            <td><a href="{{url_for('deletenotes',nid=i[0])}}">Delete</a></td>,
+        </tr>
+        
+    </tbody>
+        {% endfor %}
+</table>
+
+{% endif %}
+</html>
